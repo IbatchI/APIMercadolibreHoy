@@ -4,8 +4,8 @@
   "description": "Api para mercadolibreHoy",
   "main": "App.ts",
   "scripts": {
-    "dev": "ts-node-dev src/App.ts",
-    "start": "node build/src/App.js",
+    "dev": "ts-node-dev src/app.ts",
+    "start": "node build/src/app.js",
     "tsc": "tsc"
   },
   "repository": "https://github.com/IbatchI/APIMercadolibreHoy.git",
