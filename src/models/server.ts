@@ -3,15 +3,19 @@ import cors from 'cors'
 
 import { dbConnection } from '../../database/config'
 import { usersRoutes } from '../routes/users'
+import { authRoutes } from '../routes/auth'
 
 class Server {
     app: express.Application
     port: string
+    // Routes of my app
+    authPath: string
     usersPath: string
     constructor() {
         this.app = express()
         this.port = process.env.PORT || '8000'
         // Paths of my app
+        this.authPath = '/api/auth'
         this.usersPath = '/api/users'
 
         // Connect to database
@@ -40,7 +44,8 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.usersPath, usersRoutes);
+        this.app.use(this.authPath, authRoutes)
+        this.app.use(this.usersPath, usersRoutes)
     }
 
     listen() {

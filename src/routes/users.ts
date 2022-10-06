@@ -1,9 +1,11 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
 
+import { validateJWT } from '../../middlewares/validate-jwt';
+import { validateFields } from '../../middlewares/validate-fields'
+
 import { emailIsAlreadyRegistered, userExistsById } from '../../helpers/db-validators';
 import { usersGet, usersPost, userPut, userDelete } from '../controllers/users';
-import { validateFields } from '../../middlewares/validate-fields'
 
 export const usersRoutes = Router()
 
@@ -18,12 +20,14 @@ usersRoutes.post('/', [
 ], usersPost)
 
 usersRoutes.put('/:id', [
+    validateJWT,
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(userExistsById),
     validateFields
 ], userPut)
 
 usersRoutes.delete('/:id', [
+    validateJWT,
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(userExistsById),
     validateFields
