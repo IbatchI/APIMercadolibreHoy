@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev src/app.ts",
     "start": "node build/src/app.js",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "build": "tsc --build"
   },
   "repository": "https://github.com/IbatchI/APIMercadolibreHoy.git",
   "author": "batch <lucashernandez904@gmail.com>",
