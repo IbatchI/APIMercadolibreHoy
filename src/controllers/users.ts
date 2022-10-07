@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Response, Request } from "express";
 import bcrypt from 'bcrypt'
 
 import User from "../models/user";
+import { IGetUserAuthInfoRequest } from "../types";
 
 export const usersGet = (req: Request, res: Response) => {
     res.json({
@@ -26,7 +27,7 @@ export const usersPost = async (req: Request, res: Response) => {
     });
 }
 
-export const userPut = async (req: Request, res: Response) => {
+export const userPut = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { id } = req.params
     const { _id, password, google, email, ...rest } = req.body
     if(password) {
@@ -39,16 +40,18 @@ export const userPut = async (req: Request, res: Response) => {
 
     res.json({ 
         message: 'Usuario actualizado',
-        user 
+        userEdited: user,
+        userLogued: req.user
     });
 }
 
-export const userDelete = async (req: Request, res: Response) => {
+export const userDelete = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { id } = req.params
     const user = await User.findByIdAndUpdate(id, { state: false })
 
     res.json({ 
         message: 'Usuario eliminado',
-        user 
+        userDeleted: user,
+        userLogued: req.user 
     });
 }
