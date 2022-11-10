@@ -11,7 +11,6 @@ export const usersGet = (req: Request, res: Response) => {
 }
 
 export const usersPost = async (req: Request, res: Response) => {
-    console.log('req')
     const { name, email, password } = req.body
     const user = new User({ name, email, password })
     
