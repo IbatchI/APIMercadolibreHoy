@@ -4,18 +4,13 @@ export interface ISearch {
     keyword: string
     state: boolean
     user: Schema.Types.ObjectId
-    wantedPrice: number
 }
 
-const SeachSchema = new Schema<ISearch>({
+const SearchSchema = new Schema<ISearch>({
     keyword: {
         type: String,
         required: [true, 'La palabra clave es obligatoria'],
         unique: true
-    },
-    wantedPrice: {
-        type: Number,
-        default: 0
     },
     // This field is for soft delete
     state: {
@@ -29,10 +24,10 @@ const SeachSchema = new Schema<ISearch>({
     }
 })
 
-SeachSchema.methods.toJSON = function() {
+SearchSchema.methods.toJSON = function() {
     const { __v, _id, state, ...search } = this.toObject()
     search.uid = _id
     return search
 }
 
-export default model('Search', SeachSchema)
+export const Search = model('Search', SearchSchema)

@@ -1,6 +1,4 @@
-import Publication from "../src/models/publication"
-import Search from "../src/models/search"
-import User from "../src/models/user"
+import {Publication, Search, User} from "../src/models"
 
 export const emailIsAlreadyRegistered = async (email = '') => {
     const emailExists = await User.findOne({ email })
@@ -27,5 +25,17 @@ export const publicationExistsById = async (id = '') => {
     const publicationExists = await Publication.findById(id)
     if (!publicationExists) {
         throw new Error(`El id ${id} no existe`)
+    }
+}
+
+// Filters
+const validsNamesOfFilters = [
+    'RANGE_PRICE'
+]
+
+export const isNameValid = async (name = '') => {
+    const existsName = await validsNamesOfFilters.includes(name);
+    if ( !existsName ) {
+        throw new Error(`El filtro ${ name } no es valido`);
     }
 }

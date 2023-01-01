@@ -47,4 +47,4 @@ PublicationSchema.methods.toJSON = function() {
     return publication
 }
 
-export default model('Publication', PublicationSchema)
+export const Publication = model('Publication', PublicationSchema)

@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import bcrypt from 'bcrypt'
-import User from "../models/user"
+import { User } from "../models"
 import { createJWT } from "../../helpers/generar-jwt"
 import { googleVerify } from "../../helpers/google-verify"
 
@@ -41,7 +41,7 @@ export const login = async (req: Request, res: Response) => {
         })
     } catch(error) {
         return res.status(500).json({
-            message: 'Hable con el administrador'
+            msg: 'Hable con el administrador'
         })
     }
 }

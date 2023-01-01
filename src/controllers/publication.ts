@@ -1,7 +1,6 @@
 import { Response, Request} from "express"
 
-import Publication from "../models/publication"
-import Search from "../models/search"
+import { Publication, Search } from "../models"
 
 export const getAllPublications = async (req: Request, res: Response) => {
     const { limit = 5, from = 0, viewed = false } = req.params
@@ -27,7 +26,7 @@ export const publicationPost = async (req: Request, res: Response) => {
 
     if(uniqueId) {
         return res.status(400).json({
-            message: 'El producto ya existe'
+            msg: 'El producto ya existe'
         })
     }
 
@@ -49,7 +48,7 @@ export const publicationDelete = async (req: Request, res: Response) => {
     const publication = await Publication.findByIdAndRemove(id)
 
     res.json({ 
-        message: 'Publicacion eliminada',
+        msg: 'Publicacion eliminada',
         publicationDeleted: publication,
     });
 }
@@ -62,12 +61,12 @@ export const markPublicationAsViewedPut = async (req: Request, res: Response) =>
         const numberOfUpdatedPublications = publications.modifiedCount
         
         res.json({
-            message: `${numberOfUpdatedPublications} publicaciones fueron marcadas como vistas`,
+            msg: `${numberOfUpdatedPublications} publicaciones fueron marcadas como vistas`,
             numberOfUpdatedPublications
         })
     } else {
         return res.status(400).json({
-            message: 'No hay publicaciones para actualizar'
+            msg: 'No hay publicaciones para actualizar'
         })
     }
 }

@@ -1,11 +1,13 @@
 import express from 'express'
 import cors from 'cors'
 
-import { authRoutes } from '../routes/auth'
 import { dbConnection } from '../../database/config'
-import { publicationRoutes } from '../routes'
-import { searchRoutes } from '../routes/search'
-import { usersRoutes } from '../routes/users'
+import { filtersRoutes,
+    publicationRoutes, 
+    authRoutes,
+    searchRoutes,
+    usersRoutes 
+} from '../routes'
 
 class Server {
     app: express.Application
@@ -13,6 +15,7 @@ class Server {
     // Routes of my app
     paths: {
         authPath: string
+        filtersPath: string
         publicationPath: string
         searchPath: string
         usersPath: string
@@ -24,6 +27,7 @@ class Server {
         // Paths of my app
         this.paths = {
             authPath: '/api/auth',
+            filtersPath: '/api/filters',
             publicationPath: '/api/publication',
             searchPath: '/api/search',
             usersPath: '/api/users',
@@ -56,6 +60,7 @@ class Server {
 
     routes() {
         this.app.use(this.paths.authPath, authRoutes)
+        this.app.use(this.paths.filtersPath, filtersRoutes)
         this.app.use(this.paths.publicationPath, publicationRoutes)
         this.app.use(this.paths.searchPath, searchRoutes)
         this.app.use(this.paths.usersPath, usersRoutes)

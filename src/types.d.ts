@@ -1,6 +1,5 @@
 import { Request } from "express"
-import { IUser } from "./models/user"
-import { ISearch} from "./models/search"
+import { IUser, ISearch } from "./models"
 
 export interface IGetUserAuthInfoRequest extends Request {
     user?: IUser
@@ -8,5 +7,6 @@ export interface IGetUserAuthInfoRequest extends Request {
 }
 
 export interface IGetSearchInfoRequest extends Request {
+    searchBody?: ISearch
     searchId?: string
 }
