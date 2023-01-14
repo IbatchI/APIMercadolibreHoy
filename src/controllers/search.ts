@@ -1,14 +1,16 @@
-import { Response, Request} from "express"
-import { Search } from "../models"
+import { Response} from "express"
+import { IUser, Search } from "../models"
 import { IGetUserAuthInfoRequest } from "../types"
 
-const getPaginatedSearches = async (limit: number, from: number) => {
-    const query = { state: true }
+const getPaginatedSearches = async (limit: number, from: number, user: IUser | undefined) => {
+    const query = { state: true, user: user }
+    // get searches by user and sorted by keyword
     const [total, searches] = await Promise.all([
         Search.countDocuments(query),
         Search.find(query)
             .skip(Number(from))
-            .limit(Number(limit)),
+            .limit(Number(limit))
+            .sort({ keyword: 'asc' })
     ])
 
     return {
@@ -17,10 +19,11 @@ const getPaginatedSearches = async (limit: number, from: number) => {
     }
 }
 
-export const getAllSearches = async (req: Request, res: Response) => {
+export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response) => {
+    const user = req.user
     const { limit = 5, from = 0 } = req.query
 
-    const {total, searches} = await getPaginatedSearches(Number(limit), Number(from))
+    const {total, searches} = await getPaginatedSearches(Number(limit), Number(from), user)
 
     res.json({
         total,
@@ -40,7 +43,7 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
     } else if(searchDB && searchDB.state === false) {
         const search = await Search
             .findByIdAndUpdate(searchDB._id, { state: true })
-        const {total, searches} = await getPaginatedSearches(Number(5), Number(0))
+        const {total, searches} = await getPaginatedSearches(Number(5), Number(0), user)
         return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search, total, searches})
     }
 
@@ -52,7 +55,7 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
     const search = new Search(data)
     await search.save()
 
-    const {total, searches} = await getPaginatedSearches(Number(5), Number(0))
+    const {total, searches} = await getPaginatedSearches(Number(5), Number(0), user)
 
     return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search, total, searches})
 }
