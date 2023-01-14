@@ -2,14 +2,14 @@ import { NextFunction, Response } from "express"
 import jwt from 'jsonwebtoken';
 
 import { IGetUserAuthInfoRequest } from "../src/types";
-import User from "../src/models/user";
+import { User } from "../src/models";
 
 export const validateJWT = async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
     // read token
     const token = req.header('x-token')
     if(!token) {
         return res.status(401).json({
-            message: 'No hay token en la petición'
+            msg: 'No hay token en la petición'
         })
     }
     try {
@@ -21,12 +21,12 @@ export const validateJWT = async (req: IGetUserAuthInfoRequest, res: Response, n
         const userFinded = await User.findById(uid)
         if(!userFinded) {
             return res.status(401).json({
-                message: 'Token no válido - usuario no existe en DB'
+                msg: 'Token no válido - usuario no existe en DB'
             })
         }
         if(!userFinded.state) {
             return res.status(401).json({
-                message: 'Token no válido - usuario con estado: false'
+                msg: 'Token no válido - usuario con estado: false'
             })
         }
 
@@ -35,7 +35,7 @@ export const validateJWT = async (req: IGetUserAuthInfoRequest, res: Response, n
         next()
     } catch (error) {
         return res.status(401).json({
-            message: 'Token no válido'
+            msg: 'Token no válido'
         })
     }
 }

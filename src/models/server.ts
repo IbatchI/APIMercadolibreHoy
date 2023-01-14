@@ -2,21 +2,36 @@ import express from 'express'
 import cors from 'cors'
 
 import { dbConnection } from '../../database/config'
-import { usersRoutes } from '../routes/users'
-import { authRoutes } from '../routes/auth'
+import { filtersRoutes,
+    publicationRoutes, 
+    authRoutes,
+    searchRoutes,
+    usersRoutes 
+} from '../routes'
 
 class Server {
     app: express.Application
     port: string
     // Routes of my app
-    authPath: string
-    usersPath: string
+    paths: {
+        authPath: string
+        filtersPath: string
+        publicationPath: string
+        searchPath: string
+        usersPath: string
+    }
+
     constructor() {
         this.app = express()
         this.port = process.env.PORT || '8000'
         // Paths of my app
-        this.authPath = '/api/auth'
-        this.usersPath = '/api/users'
+        this.paths = {
+            authPath: '/api/auth',
+            filtersPath: '/api/filters',
+            publicationPath: '/api/publication',
+            searchPath: '/api/search',
+            usersPath: '/api/users',
+        }
 
         // Connect to database
         this.connectionDb()
@@ -44,8 +59,11 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.authPath, authRoutes)
-        this.app.use(this.usersPath, usersRoutes)
+        this.app.use(this.paths.authPath, authRoutes)
+        this.app.use(this.paths.filtersPath, filtersRoutes)
+        this.app.use(this.paths.publicationPath, publicationRoutes)
+        this.app.use(this.paths.searchPath, searchRoutes)
+        this.app.use(this.paths.usersPath, usersRoutes)
     }
 
     listen() {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import bcrypt from 'bcrypt'
-import User from "../models/user"
+import { User } from "../models"
 import { createJWT } from "../../helpers/generar-jwt"
 import { googleVerify } from "../../helpers/google-verify"
 
@@ -12,14 +12,14 @@ export const login = async (req: Request, res: Response) => {
         const user = await User.findOne({ email })
         if(!user) {
             return res.status(400).json({
-                msg: 'Usuario / Contraseña no son correctos - email'
+                msg: 'Credenciales inválidas'
             })
         }
 
         // Verificar si el usuario está activo
         if(!user.state) {
             return res.status(400).json({
-                msg: 'El ususaio no está activo'
+                msg: 'El usuario no existe'
             })
         }
 
@@ -27,7 +27,7 @@ export const login = async (req: Request, res: Response) => {
         const validPassword = bcrypt.compareSync(password, user.password)
         if(!validPassword) {
             return res.status(400).json({
-                msg: 'Usuario / Contraseña no son correctos - password'
+                msg: 'Credenciales inválidas'
             })
         }
 
@@ -41,7 +41,7 @@ export const login = async (req: Request, res: Response) => {
         })
     } catch(error) {
         return res.status(500).json({
-            message: 'Hable con el administrador'
+            msg: 'Hable con el administrador'
         })
     }
 }
