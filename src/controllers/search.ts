@@ -43,8 +43,7 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
     } else if(searchDB && searchDB.state === false) {
         const search = await Search
             .findByIdAndUpdate(searchDB._id, { state: true })
-        const {total, searches} = await getPaginatedSearches(Number(5), Number(0), user)
-        return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search, total, searches})
+        return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search})
     }
 
     const data = {
@@ -54,10 +53,9 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
 
     const search = new Search(data)
     await search.save()
+   
 
-    const {total, searches} = await getPaginatedSearches(Number(5), Number(0), user)
-
-    return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search, total, searches})
+    return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search})
 }
 
 export const searchDelete = async (req: IGetUserAuthInfoRequest, res: Response) => {
