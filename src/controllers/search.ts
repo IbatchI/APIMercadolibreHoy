@@ -34,7 +34,7 @@ export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response
 export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { keyword } = req.body
     const { user } = req
-    const searchDB = await Search.findOne({ keyword })
+    const searchDB = await Search.findOne({ keyword, user })
 
     if(searchDB && searchDB.state === true) {
         return res.status(400).json({

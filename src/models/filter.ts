@@ -1,32 +1,19 @@
 import { Schema, model } from "mongoose"
-
+import type { TFilter } from "../types"
 export interface IFilter {
-    name: string
+    filter: TFilter
     search: Schema.Types.ObjectId
-    state: boolean
-    value: object
 }
 
 const FilterSchema = new Schema<IFilter>({
-    name: {
-        type: String,
-        required: [true, 'El nombre del filtro es obligatorio'],
-        unique: true,
-        emun: ['RANGE_PRICE']
+    filter: {
+        type: Object,
+        required: [true, 'El filtro es obligatorio']
     },
     search: {
         type: Schema.Types.ObjectId,
         ref: 'Search',
         required: true
-    },
-    // This field is for soft delete
-    state: {
-        type: Boolean,
-        default: true
-    },
-    value: {
-        type: Object,
-        required: [true, 'El filtro debe tener un valor']
     }
 })
 

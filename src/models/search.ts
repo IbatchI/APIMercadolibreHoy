@@ -10,7 +10,7 @@ const SearchSchema = new Schema<ISearch>({
     keyword: {
         type: String,
         required: [true, 'La palabra clave es obligatoria'],
-        unique: true
+        unique: false
     },
     // This field is for soft delete
     state: {
