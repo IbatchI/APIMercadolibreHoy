@@ -1,4 +1,4 @@
-import {Filter, Publication, Search, User} from "../src/models"
+import {Filter, Search, User} from "../src/models"
 import { TFilter, TypesOfFilters } from "../src/types"
 
 // Email validation
@@ -19,13 +19,6 @@ export const userExistsById = async (id = '') => {
 export const searchExistsById = async (id = '') => {
     const searchExists = await Search.findById(id)
     if (!searchExists) {
-        throw new Error(`El id ${id} no existe`)
-    }
-}
-
-export const publicationExistsById = async (id = '') => {
-    const publicationExists = await Publication.findById(id)
-    if (!publicationExists) {
         throw new Error(`El id ${id} no existe`)
     }
 }

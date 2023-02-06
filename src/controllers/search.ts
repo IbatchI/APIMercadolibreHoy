@@ -3,7 +3,7 @@ import { IUser, Search } from "../models"
 import { IGetUserAuthInfoRequest } from "../types"
 
 const getPaginatedSearches = async (limit: number, from: number, user: IUser | undefined) => {
-    const query = { state: true, user: user }
+    const query = { state: true, user}
     // get searches by user and sorted by keyword
     const [total, searches] = await Promise.all([
         Search.countDocuments(query),

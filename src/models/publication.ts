@@ -1,30 +1,11 @@
 import { Schema, model } from "mongoose"
 
 export interface IPublication {
-    link: string
-    price: number
-    search: Schema.Types.ObjectId
-    title: string
     uniqueIdFromML: string
-    viewed: boolean
-    // Maybe we can put images 😶‍🌫️
+    search: Schema.Types.ObjectId
 }
 
 const PublicationSchema = new Schema<IPublication>({
-    link: {
-        type: String,
-        required: [true, 'El link es obligatorio'],
-        unique: true
-    },
-    price: {
-        type: Number,
-        required: [true, 'El precio es obligatorio'],
-        default: 0,
-    },
-    title: {
-        type: String,
-        default: 'Sin título'
-    },
     search: {
         type: Schema.Types.ObjectId,
         ref: 'Search',
@@ -34,10 +15,6 @@ const PublicationSchema = new Schema<IPublication>({
         type: String,
         required: [true, 'El id de la publicación es obligatorio'],
         unique: true
-    },
-    viewed: {
-        type: Boolean,
-        default: false
     },
 })
 
