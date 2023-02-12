@@ -36,12 +36,13 @@ export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Respo
 // Get all filters by search
 export const getAllFiltersBySearch = async (req: IGetFilterInfoRequest, res: Response) => {
     const { searchId } = req.body
+    
     const filtersBySeach = await FilterModel.find({ search: searchId })
 
     if(!filtersBySeach) {
         return res.status(400).json({msg: 'No se encontraron filtros'})
     }
-
+    
     return res.status(200).json({filters: filtersBySeach})
 }
 

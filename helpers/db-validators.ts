@@ -40,7 +40,7 @@ export const isAValidFilter = async (filter: TFilter) => {
         default:
             break;
     }
-
+    
     if (!isValid) {
         throw new Error(`El filtro ${type} no es válido`)
     }
