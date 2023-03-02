@@ -2,7 +2,7 @@ import { Router } from "express"
 import { check } from "express-validator"
 
 import { deleteFilter, getAllFiltersBySearch, saveFilterForSearch, updateFilter } from "../controllers/filter"
-import { filterExistsById, isAValidFilter, searchExistsById } from "../../helpers/db-validators"
+import { filterExistsById, searchExistsById } from "../../helpers/db-validators"
 import { validateFields } from "../../middlewares/validate-fields"
 import { validateJWT } from "../../middlewares/validate-jwt"
 
@@ -19,7 +19,9 @@ filtersRoutes.get('/:searchId',[
 filtersRoutes.post('/',[
     validateJWT,
     validateFields,
-    check('filter', 'El tipo de filtro no es válido').not().isEmpty().custom( isAValidFilter ),
+    check('minPrice').isNumeric(),
+    check('maxPrice').isNumeric(),
+    check('allreadySeen').isBoolean(),
     check('searchId').custom(searchExistsById),
 ], saveFilterForSearch)
 
@@ -29,7 +31,9 @@ filtersRoutes.put('/:id',[
     validateFields,
     check('id', 'El id no es válido').isMongoId(),
     check('id').custom(filterExistsById),
-    check('filter', 'El tipo de filtro no es válido').not().isEmpty().custom( isAValidFilter ),
+    check('minPrice').isNumeric(),
+    check('maxPrice').isNumeric(),
+    check('allreadySeen').isBoolean(),
 ], updateFilter)
 
 // Delete filter

@@ -5,32 +5,24 @@ import { Filter as FilterModel, Search } from "../models"
 
 // Post Filter necesitamos enviarle el id de la busqueda a la que pertenece
 export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Response) => {
-    const { filter: filterRequest, searchId } = req.body
+    const { 
+        minPrice,
+        maxPrice,
+        alreadySeen,
+        searchId 
+    } = req.body
 
     // get search
     const search = await Search.findById(searchId)
 
-    // check if this filter is allready in the data base
-    const filtersDB = await FilterModel.find({ search: searchId })
-    const filterDBExists = filtersDB.find( filter => filter.filter.type === filterRequest.type )
-    if (filterDBExists) {
-        // update filter
-        filterDBExists.filter = filterRequest
-        await filterDBExists.save()
-        return res.status(201).json({filter: filterDBExists, msg: 'Filtro actualizado'})
-    }
- 
+    if(!search) {
+        return res.status(400).json({msg: 'No se encontro la busqueda'})
+    } else {
+        const filter = new FilterModel({ minPrice, maxPrice, alreadySeen, search: searchId })
+        await filter.save()
+        return res.status(201).json({ filter, msg: 'Filtro guardado' })
 
-    // data for filter
-    const filterData = {
-        filter: filterRequest,
-        search
     }
-    
-    const filter = new FilterModel(filterData)
-    await filter.save()
-
-    return res.status(201).json({filter, msg: 'Filtro guardado'})
 }
 
 // Get all filters by search
@@ -43,12 +35,12 @@ export const getAllFiltersBySearch = async (req: IGetFilterInfoRequest, res: Res
         return res.status(400).json({msg: 'No se encontraron filtros'})
     }
     
-    return res.status(200).json({filters: filtersBySeach})
+    return res.status(200).json({ filters: filtersBySeach })
 }
 
 // Update filter
 export const updateFilter = async (req: IGetFilterInfoRequest, res: Response) => {
-    const { filter } = req.body
+    const { filters } = req.body
     const { id } = req.params
 
     const filerDb = await FilterModel.findById(id)
@@ -56,7 +48,7 @@ export const updateFilter = async (req: IGetFilterInfoRequest, res: Response) =>
         return res.status(400).json({msg: 'No se encontro el filtro'})
     }
 
-    filerDb.set(filter)
+    filerDb.set(filters)
     await filerDb.save()
 
     res.json({ 

@@ -1,5 +1,4 @@
-import {Filter, Search, User} from "../src/models"
-import { TFilter, TypesOfFilters } from "../src/types"
+import { Filter, Search, User } from "../src/models"
 
 // Email validation
 export const emailIsAlreadyRegistered = async (email = '') => {
@@ -18,33 +17,19 @@ export const userExistsById = async (id = '') => {
 
 export const searchExistsById = async (id = '') => {
     const searchExists = await Search.findById(id)
-    if (!searchExists) {
+    if (searchExists === null) {
         throw new Error(`El id ${id} no existe`)
     }
 }
 
-// Filters validation of custom type TFilter
-export const isAValidFilter = async (filter: TFilter) => {
-    const { type, value } = filter
-    let isValid = false
-    switch (type) {
-        case TypesOfFilters.MIN_PRICE:
-            isValid = typeof value === 'number'
-            break;
-        case TypesOfFilters.MAX_PRICE:
-            isValid = typeof value === 'number'
-            break;
-        case TypesOfFilters.ALREADY_SEEN:
-            isValid = typeof value === 'boolean'
-            break;
-        default:
-            break;
-    }
-    
-    if (!isValid) {
-        throw new Error(`El filtro ${type} no es válido`)
-    }
-}
+// // Filters validation of custom type TFilter
+// export const isAValidFilter = async (filters: TFilter) => {
+//     // TODO: mejorar la validación, ver si tiene las 3 keys { minPrice, maxPrice, alreadySeen }
+//     if (filters.minPrice && filters.maxPrice && filters.alreadySeen) {
+//         return
+//     }
+//     throw new Error(`El filtro no es válido`)
+// }
 
 // Filter exists by id
 export const filterExistsById = async (id = '') => {

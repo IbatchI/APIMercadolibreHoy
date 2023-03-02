@@ -3,6 +3,7 @@ import { Schema, model } from "mongoose"
 export interface ISearch {
     keyword: string
     state: boolean
+    __v?: number
     user: Schema.Types.ObjectId
 }
 

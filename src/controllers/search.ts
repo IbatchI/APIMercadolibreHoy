@@ -1,7 +1,7 @@
 import { Response} from "express"
 import { connection } from "mongoose"
 import { Filter, IUser, Search } from "../models"
-import { IGetUserAuthInfoRequest, TypesOfFilters } from "../types"
+import { IGetUserAuthInfoRequest } from "../types"
 
 const getPaginatedSearches = async (limit: number, from: number, user: IUser | undefined) => {
     const query = { state: true, user}
@@ -26,30 +26,23 @@ export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response
 
     const {total, searches} = await getPaginatedSearches(Number(limit), Number(from), user)
 
-    console.log({searches})
-
     const searchesWithFilters = await Promise.all(searches.map(async search => {
-        const filters = await Filter.find({ search })
+        const filters = await Filter.findOne({ search })
         const objetSearch = search.toObject()
+        const { __v, _id, state, user, ...searchWithoutV } = objetSearch
+        // map search with uid
         const searchWithUid = {
-            ...objetSearch,
-            uid: objetSearch._id
+            ...searchWithoutV,
+            uid: objetSearch._id,
         }
-
-        const mappedFilters = filters.map(filter => {
-            const objetFilter = filter.filter
-            return {
-                ...objetFilter,
-                uid: filter._id
-            }
-        })
+     
 
         return {
             ...searchWithUid,
-            filters: mappedFilters
+            filters
         }
     }))
-
+    
     res.json({
         total,
         searches: searchesWithFilters
@@ -70,28 +63,16 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
             .findByIdAndUpdate(searchDB._id, { state: true })
         return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search})
     } else {
-        const session = await connection.startSession();
-        session.startTransaction();
-        try{
-            const data = {
-                keyword,
-                user
-            }
-        
-            const search = new Search(data)
-            await search.save()
+        const data = {
+            keyword,
+            user
+        }
+    
+        const search = new Search(data)
+        await search.save()
 
-            const filter = new Filter({ search: search._id, filter: { type: TypesOfFilters.ALREADY_SEEN , value: false } })
-
-            await filter.save()
-            await session.commitTransaction();
-           
-            return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search})
-        } catch (error) {
-            await session.abortTransaction();
-            return res.status(500).json({msg: 'Error en el servidor'})
-        } finally {
-            session.endSession();}
+        // TODO: sacar el usuario de la respuesta
+        return res.status(201).json({msg:`${search?.keyword} guardado con exito`, search })
     }
 
 }
@@ -99,6 +80,8 @@ export const searchPost = async (req: IGetUserAuthInfoRequest, res: Response) =>
 export const searchDelete = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { id } = req.params
     const search = await Search.findByIdAndUpdate(id, { state: false })
+    // TODO: se puede hacer que se reciba como parametro si se quiere eliminar de la base de datos
+    // Si es asi tambien tendriamos que borrar los filtros asociados a la busqueda
 
     res.json({ 
         msg: 'Búsqueda eliminada',
@@ -108,14 +91,31 @@ export const searchDelete = async (req: IGetUserAuthInfoRequest, res: Response) 
 }
 
 export const searchPut = async (req: IGetUserAuthInfoRequest, res: Response) => {
-    const { id } = req.params
-    const { keyword } = req.body
+    const { id: searchId } = req.params
+    const { keyword, filters} = req.body
+    const { minPrice, maxPrice, alreadySeen, uid: filtersId } = filters
 
-    const search = await Search.findByIdAndUpdate(id, {keyword})
-
-    res.json({ 
-        msg: 'Búsqueda actualizada',
-        searchEdited: search,
-        userLogued: req.user
-    });
+    const session = await connection.startSession();
+    session.startTransaction();
+    try {
+        const search = await Search.findByIdAndUpdate(searchId, { keyword })
+        search?.save()
+    
+        // update filter of search
+        const filtersBySearch = await Filter.findByIdAndUpdate(filtersId, { minPrice, maxPrice, alreadySeen })
+        filtersBySearch?.save()
+        
+        res.status(200).json({ 
+            msg: 'Búsqueda actualizada',
+            searchEdited: search,
+            filters: filtersBySearch
+        })
+    }
+    catch (error) {
+        await session.abortTransaction();
+        return res.status(500).json({msg: 'Error en el servidor'})
+    }
+    finally {
+        session.endSession()
+    }
 }

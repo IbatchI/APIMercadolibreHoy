@@ -1,14 +1,24 @@
 import { Schema, model } from "mongoose"
-import type { TFilter } from "../types"
 export interface IFilter {
-    filter: TFilter
+    minPrice: number
+    maxPrice: number
+    allreadySeen: boolean
     search: Schema.Types.ObjectId
 }
 
 const FilterSchema = new Schema<IFilter>({
-    filter: {
-        type: Object,
-        required: [true, 'El filtro es obligatorio']
+    minPrice: {
+        type: Number,
+        unique: false
+    },
+    maxPrice: {
+        type: Number,
+        unique: false
+    },
+    allreadySeen: {
+        type: Boolean,
+        unique: false,
+        default: false
     },
     search: {
         type: Schema.Types.ObjectId,
@@ -18,7 +28,7 @@ const FilterSchema = new Schema<IFilter>({
 })
 
 FilterSchema.methods.toJSON = function() {
-    const { __v, _id, state, ...filter } = this.toObject()
+    const { __v, _id, state, search, ...filter } = this.toObject()
     filter.uid = _id
     return filter
 }
