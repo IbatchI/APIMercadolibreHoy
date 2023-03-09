@@ -1,37 +1,34 @@
 import { Schema, model } from "mongoose"
-
 export interface IFilter {
-    name: string
+    minPrice: number
+    maxPrice: number
+    allreadySeen: boolean
     search: Schema.Types.ObjectId
-    state: boolean
-    value: object
 }
 
 const FilterSchema = new Schema<IFilter>({
-    name: {
-        type: String,
-        required: [true, 'El nombre del filtro es obligatorio'],
-        unique: true,
-        emun: ['RANGE_PRICE']
+    minPrice: {
+        type: Number,
+        unique: false
+    },
+    maxPrice: {
+        type: Number,
+        unique: false
+    },
+    allreadySeen: {
+        type: Boolean,
+        unique: false,
+        default: false
     },
     search: {
         type: Schema.Types.ObjectId,
         ref: 'Search',
         required: true
-    },
-    // This field is for soft delete
-    state: {
-        type: Boolean,
-        default: true
-    },
-    value: {
-        type: Object,
-        required: [true, 'El filtro debe tener un valor']
     }
 })
 
 FilterSchema.methods.toJSON = function() {
-    const { __v, _id, state, ...filter } = this.toObject()
+    const { __v, _id, state, search, ...filter } = this.toObject()
     filter.uid = _id
     return filter
 }

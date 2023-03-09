@@ -2,7 +2,7 @@ import { Router } from "express"
 import { check } from "express-validator"
 
 import { getAllSearches, searchDelete, searchPost, searchPut } from "../controllers/search"
-import { searchExistsById } from "../../helpers/db-validators"
+import { filterExistsById, searchExistsById } from "../../helpers/db-validators"
 import { validateFields } from "../../middlewares/validate-fields"
 import { validateJWT } from "../../middlewares/validate-jwt"
 
@@ -40,6 +40,5 @@ searchRoutes.put('/:id',[
     check('id', 'El id no es válido').isMongoId(),
     check('id').custom(searchExistsById),
     check('keyword', 'La búsqueda es obligatoria').not().isEmpty(),
-    check('wantedPrice', 'El precio es obligatorio').not().isEmpty(),
-    check('wantedPrice', 'El precio debe ser un número').isNumeric(),
+    check('filtersId').custom(filterExistsById),
 ], searchPut)

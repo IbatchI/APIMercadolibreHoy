@@ -3,6 +3,7 @@ import { Schema, model } from "mongoose"
 export interface ISearch {
     keyword: string
     state: boolean
+    __v?: number
     user: Schema.Types.ObjectId
 }
 
@@ -10,7 +11,7 @@ const SearchSchema = new Schema<ISearch>({
     keyword: {
         type: String,
         required: [true, 'La palabra clave es obligatoria'],
-        unique: true
+        unique: false
     },
     // This field is for soft delete
     state: {

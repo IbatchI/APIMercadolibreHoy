@@ -1,5 +1,6 @@
-import {Publication, Search, User} from "../src/models"
+import { Filter, Search, User } from "../src/models"
 
+// Email validation
 export const emailIsAlreadyRegistered = async (email = '') => {
     const emailExists = await User.findOne({ email })
     if (emailExists) {
@@ -16,26 +17,24 @@ export const userExistsById = async (id = '') => {
 
 export const searchExistsById = async (id = '') => {
     const searchExists = await Search.findById(id)
-    if (!searchExists) {
+    if (searchExists === null) {
         throw new Error(`El id ${id} no existe`)
     }
 }
 
-export const publicationExistsById = async (id = '') => {
-    const publicationExists = await Publication.findById(id)
-    if (!publicationExists) {
+// // Filters validation of custom type TFilter
+// export const isAValidFilter = async (filters: TFilter) => {
+//     // TODO: mejorar la validación, ver si tiene las 3 keys { minPrice, maxPrice, alreadySeen }
+//     if (filters.minPrice && filters.maxPrice && filters.alreadySeen) {
+//         return
+//     }
+//     throw new Error(`El filtro no es válido`)
+// }
+
+// Filter exists by id
+export const filterExistsById = async (id = '') => {
+    const filterExist = await Filter.findById(id)
+    if (!filterExist) {
         throw new Error(`El id ${id} no existe`)
-    }
-}
-
-// Filters
-const validsNamesOfFilters = [
-    'RANGE_PRICE'
-]
-
-export const isNameValid = async (name = '') => {
-    const existsName = await validsNamesOfFilters.includes(name);
-    if ( !existsName ) {
-        throw new Error(`El filtro ${ name } no es valido`);
     }
 }
