@@ -9,15 +9,18 @@ export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Respo
         minPrice,
         maxPrice,
         alreadySeen,
-        searchId 
+        searchId,
+        keyword
     } = req.body
 
     // get search
     const search = await Search.findById(searchId)
-
+    
     if(!search) {
         return res.status(400).json({msg: 'No se encontro la busqueda'})
     } else {
+        if(keyword) search.set({ keyword })
+        await search.save()
         const filter = new FilterModel({ minPrice, maxPrice, alreadySeen, search: searchId })
         await filter.save()
         return res.status(201).json({ filter, msg: 'Filtro guardado' })
