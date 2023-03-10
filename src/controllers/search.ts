@@ -27,6 +27,7 @@ export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response
     const {total, searches} = await getPaginatedSearches(Number(limit), Number(from), user)
 
     const searchesWithFilters = await Promise.all(searches.map(async search => {
+        console.log({search})
         const filters = await Filter.findOne({ search })
         const objetSearch = search.toObject()
         const { __v, _id, state, user, ...searchWithoutV } = objetSearch

@@ -1,7 +1,7 @@
 import { Response} from "express"
 
 import { IGetFilterInfoRequest } from '../types'
-import { Filter as FilterModel, Search } from "../models"
+import { Filter, Search } from "../models"
 
 // Post Filter necesitamos enviarle el id de la busqueda a la que pertenece
 export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Response) => {
@@ -21,7 +21,7 @@ export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Respo
     } else {
         if(keyword) search.set({ keyword })
         await search.save()
-        const filter = new FilterModel({ minPrice, maxPrice, alreadySeen, search: searchId })
+        const filter = new Filter({ minPrice, maxPrice, alreadySeen, search: searchId })
         await filter.save()
         return res.status(201).json({ filter, msg: 'Filtro guardado' })
 
@@ -30,9 +30,10 @@ export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Respo
 
 // Get all filters by search
 export const getAllFiltersBySearch = async (req: IGetFilterInfoRequest, res: Response) => {
-    const { searchId } = req.body
+    const { id } = req.params
     
-    const filtersBySeach = await FilterModel.find({ search: searchId })
+    const search = await Search.findById(id)
+    const filtersBySeach = await Filter.findOne({ search })
 
     if(!filtersBySeach) {
         return res.status(400).json({msg: 'No se encontraron filtros'})
@@ -46,7 +47,7 @@ export const updateFilter = async (req: IGetFilterInfoRequest, res: Response) =>
     const { filters } = req.body
     const { id } = req.params
 
-    const filerDb = await FilterModel.findById(id)
+    const filerDb = await Filter.findById(id)
     if(!filerDb) {
         return res.status(400).json({msg: 'No se encontro el filtro'})
     }
@@ -63,6 +64,6 @@ export const updateFilter = async (req: IGetFilterInfoRequest, res: Response) =>
 // Delete filter
 export const deleteFilter = async (req: IGetFilterInfoRequest, res: Response) => {
     const { id } = req.params
-    await FilterModel.findByIdAndDelete(id)
+    await Filter.findByIdAndDelete(id)
     res.status(200).json({msg: 'Filtro eliminado'})
 }

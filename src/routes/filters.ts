@@ -9,7 +9,7 @@ import { validateJWT } from "../../middlewares/validate-jwt"
 export const filtersRoutes = Router()
 
 // Get all filters by search
-filtersRoutes.get('/:searchId',[
+filtersRoutes.get('/:id',[
     validateJWT,
     validateFields,
     check('searchId').custom(searchExistsById),
