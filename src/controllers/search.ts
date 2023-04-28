@@ -30,6 +30,7 @@ export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response
         const filters = await Filter.findOne({ search })
         const objetSearch = search.toObject()
         const { __v, _id, state, user, ...searchWithoutV } = objetSearch
+        
         // map search with uid
         const searchWithUid = {
             ...searchWithoutV,
