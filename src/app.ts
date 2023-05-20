@@ -3,7 +3,7 @@ import Server from './models/server'
 import TelegramBotMLHOY from './models/telegramBot/telegramBot';
 
 const server = new Server()
-const telegramBot = new TelegramBotMLHOY()
+export const telegramBotInstance = new TelegramBotMLHOY()
 
 server.listen()
-telegramBot.initialize()
+telegramBotInstance.initialize()
