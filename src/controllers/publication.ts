@@ -3,9 +3,22 @@ import { Response } from "express"
 import { Publication } from "../models"
 import { IGetUserAuthInfoRequest } from "../types"
 
-// this url recevies an array of uniqueIdsFromML and return an array of publications that are not saved in the db
-// .../unseenPosts esto quiere decir que va a devolver las publicaciones que no hemos visto en la pagina web
-export const getAllPublications = async (req: IGetUserAuthInfoRequest, res: Response) => {
+export const seveUnseenPosts = async (uniquesIdsFromML: Array<string>, searchId: string) => {
+    uniquesIdsFromML.map(async (uniqueIdFromML: string) => {
+        const publicationDb = await Publication.findOne({ uniqueIdFromML })
+        if(publicationDb) return
+
+        const data = {
+            uniqueIdFromML,
+            search: searchId
+        }
+
+        const publications = new Publication(data)
+        await publications.save()
+    })
+}
+
+export const saveViewedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { uniqueIdsFromML, searchId} = req.body
     
     // publicaciones no vistas por el usuario
@@ -19,17 +32,5 @@ export const getAllPublications = async (req: IGetUserAuthInfoRequest, res: Resp
     })
 
     // Ahora guardamos las publicaciones que no hemos visto en la base de datos
-    uniqueIdsFromML.map(async (uniqueIdFromML: string) => {
-        const publicationDb = await Publication.findOne({ uniqueIdFromML })
-        if(publicationDb) return
-
-        const data = {
-            uniqueIdFromML,
-            search: searchId
-        }
-
-        const publications = new Publication(data)
-        await publications.save()
-    })
+    seveUnseenPosts(uniqueIdsFromML, searchId)
 }
-  

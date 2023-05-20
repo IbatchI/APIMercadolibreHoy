@@ -22,3 +22,20 @@ export type TFilter = {
     'alreadySeen': boolean;
 }
    
+interface IProduct {
+    id: string
+    permalink: string
+    title: string
+    price: number
+    pictures: string[]
+    description: string
+}
+
+interface IPicture {
+    id
+    url
+    secure_url
+    size
+    max_size
+    quality
+}

@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose"
 
 export interface ITelegramBot {
-    chatId: string
+    chatId: number
     user: Schema.Types.ObjectId
 }
 
@@ -12,7 +12,7 @@ const TelegramBotSchema = new Schema<ITelegramBot>({
         required: true
     },
     chatId: {
-        type: String,
+        type: Number,
         required: [true, 'Se necesita el id del chat para configurar el bot'],
         unique: true
     },

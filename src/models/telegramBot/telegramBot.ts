@@ -1,10 +1,10 @@
 import TelegramBot from 'node-telegram-bot-api';
+import { saveChatId } from '../../controllers/telegramBot';
 
 const token: string = process.env.BOT_KEY || '';
 
 class TelegramBotMLHOY{
     bot: TelegramBot;
-    chatId: number;
 
     constructor() {
         this.bot = new TelegramBot(
@@ -13,27 +13,23 @@ class TelegramBotMLHOY{
                 polling: true,
             } 
         );
-        this.chatId = 0
     }
 
-    sendMessage(message: string) {
-        this.bot.sendMessage(this.chatId, message)
+    // The chatId is getted from the telgramBot table
+    sendMessage(message: string, chatId: number) {
+        this.bot.sendMessage(chatId, message)
     }
 
     initialize() {
         this.bot.on('message', (msg) => {
             const chatId = msg.chat.id;
-            this.setChatId(chatId)
+            const messageText = msg.text || '';
+            const email = messageText.split(' ')[1] || '';
+
+            saveChatId(chatId, email)
             // send a message to the chat acknowledging receipt of their message
-            this.bot.sendMessage(chatId, 'Received your message');
+            this.sendMessage('Received your message', chatId);
         });
-    }
- 
-    /*
-        * Setters and getters
-    */
-    setChatId(chatId: number) {
-        this.chatId = chatId
     }
 }
 

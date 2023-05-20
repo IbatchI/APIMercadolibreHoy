@@ -8,6 +8,7 @@ import { filtersRoutes,
     searchRoutes,
     usersRoutes 
 } from '../routes'
+import { botTelegramRoutes } from '../routes/telegramBot'
 
 class Server {
     app: express.Application
@@ -19,6 +20,7 @@ class Server {
         publicationPath: string
         searchPath: string
         usersPath: string
+        botPath: string
     }
 
     constructor() {
@@ -31,6 +33,7 @@ class Server {
             publicationPath: '/api/publication',
             searchPath: '/api/search',
             usersPath: '/api/users',
+            botPath: '/api/bot'
         }
 
         // Connect to database
@@ -64,6 +67,7 @@ class Server {
         this.app.use(this.paths.publicationPath, publicationRoutes)
         this.app.use(this.paths.searchPath, searchRoutes)
         this.app.use(this.paths.usersPath, usersRoutes)
+        this.app.use(this.paths.botPath, botTelegramRoutes)
     }
 
     listen() {

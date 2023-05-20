@@ -3,7 +3,7 @@ import { connection } from "mongoose"
 import { Filter, IUser, Search } from "../models"
 import { IGetUserAuthInfoRequest } from "../types"
 
-const getPaginatedSearches = async (limit: number, from: number, user: IUser | undefined) => {
+export const getPaginatedSearches = async (limit: number, from: number, user: IUser | undefined) => {
     const query = { state: true, user}
     // get searches by user and sorted by keyword
     const [total, searches] = await Promise.all([
@@ -36,7 +36,6 @@ export const getAllSearches = async (req: IGetUserAuthInfoRequest, res: Response
             ...searchWithoutV,
             uid: objetSearch._id,
         }
-     
 
         return {
             ...searchWithUid,
