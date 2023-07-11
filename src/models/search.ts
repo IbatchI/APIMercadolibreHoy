@@ -1,9 +1,11 @@
 import { Schema, model } from "mongoose"
 
 export interface ISearch {
+    uid: string
     keyword: string
     state: boolean
     __v?: number
+    _id: string
     user: Schema.Types.ObjectId
 }
 

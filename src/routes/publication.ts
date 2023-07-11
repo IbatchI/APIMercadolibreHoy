@@ -1,10 +1,10 @@
 import { Router } from "express"
-import { check } from "express-validator"
+// import { check } from "express-validator"
 
-import { saveViewedPosts} from "../controllers/publication"
-import { searchExistsById } from "../../helpers/db-validators"
-import { validateFields } from "../../middlewares/validate-fields"
-import { validateJWT } from "../../middlewares/validate-jwt"
+// import { saveViewedPosts} from "../controllers/publication"
+// import { searchExistsById } from "../../helpers/db-validators"
+// import { validateFields } from "../../middlewares/validate-fields"
+// import { validateJWT } from "../../middlewares/validate-jwt"
 
 export const publicationRoutes = Router()
 
@@ -13,8 +13,8 @@ export const publicationRoutes = Router()
  * @param {string} searchID - Id of the search
  * @returns {Array<string>} - Array of uniqueIdsFromML
  */
-publicationRoutes.post('/unseenPosts',[
-    validateJWT,
-    validateFields,
-    check('searchId').custom(searchExistsById),
-], saveViewedPosts)
+// publicationRoutes.post('/unseenPosts',[
+//     validateJWT,
+//     validateFields,
+//     check('searchId').custom(searchExistsById),
+// ], saveViewedPosts)

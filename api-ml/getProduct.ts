@@ -24,7 +24,7 @@ const buildSearchUrl = ({ keyword, filters, page = 0 }: IGetProductsProps): stri
 export const getProducts = async ({ keyword = '', filters, page = 0 }: IGetProductsProps) => {
   const searchUrl = buildSearchUrl({ keyword, filters, page })
   const { data } = await API_ML.get(searchUrl)
-  const { results } : {results: Array<IProduct>} = data
+  const { results } : { results: Array<IProduct> } = data
   const totalResults = data.paging.total
 
   products = [...products, ...results]

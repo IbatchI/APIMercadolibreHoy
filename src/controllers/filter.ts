@@ -2,6 +2,7 @@ import { Response} from "express"
 
 import { IGetFilterInfoRequest } from '../types'
 import { Filter, Search } from "../models"
+import { ISearch } from '../models/search';
 
 // Post Filter necesitamos enviarle el id de la busqueda a la que pertenece
 export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Response) => {
@@ -28,12 +29,15 @@ export const saveFilterForSearch = async (req: IGetFilterInfoRequest, res: Respo
     }
 }
 
+export const getFiltersBySearch = async ({ search }: {search: ISearch}) => await Filter.findOne({ search })
+
 // Get all filters by search
 export const getAllFiltersBySearch = async (req: IGetFilterInfoRequest, res: Response) => {
     const { id } = req.params
     
     const search = await Search.findById(id)
-    const filtersBySeach = await Filter.findOne({ search })
+    // @ts-ignore
+    const filtersBySeach = await getFiltersBySearch({ search})
 
     if(!filtersBySeach) {
         return res.status(400).json({msg: 'No se encontraron filtros'})
