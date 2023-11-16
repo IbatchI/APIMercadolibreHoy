@@ -2,7 +2,7 @@ import { getPaginatedSearches } from "./search";
 import { IGetUserAuthInfoRequest } from "../types";
 import { Response } from "express";
 import { TelegramBot } from "../models/telegramBot/telegramBotModel";
-import { telegramBotInstance } from "../app";
+import { telegramBotInstance } from "..";
 import { ISearch, User } from "../models";
 
 export const saveChatId = async (chatId: number, email: string) => {
